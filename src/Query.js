@@ -31,22 +31,32 @@ module.exports = class Query {
     this._i = ++i;
     this.excludeFields = [];
   }
-  findOne(params) {
+  findOne(params, cb) {
     if (!isNaN(parseFloat(this.params))) this.params = params;
     else if (params && this.params) this.params = _.merge(this.params, params);
 
     this.justOne = true;
+
+    if (_.isFunction(cb)) {
+      return this.exec(cb);
+    }
+
     return this;
   }
-  findByID(params) {
-    return this.findOne(params);
+  findByID(params, cb) {
+    return this.findOne(params, cb);
   }
-  findById(params) {
-    return this.findByID(params);
+  findById(params, cb) {
+    return this.findByID(params, cb);
   }
-  find(params) {
+  find(params, cb) {
     this.findOne(params);
     this.justOne = false;
+
+    if (_.isFunction(cb)) {
+      return this.exec(cb);
+    }
+
     return this;
   }
   sort(field) {

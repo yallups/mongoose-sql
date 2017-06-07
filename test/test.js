@@ -75,7 +75,7 @@ describe('utils', function() {
     const y2 = mapschema.sync(knex, x2);
     const yS = y.toString();
     console.log('sync\n', yS);
-    //Promise.all([y1, y2, y], x=> {   
+    //Promise.all([y1, y2, y], x=> {
     //});
     y1.then(x => {
       console.log('1 sync done', JSON.stringify(x));
@@ -202,7 +202,7 @@ describe('Mongoose API', function() {
     const s = new Sticker({ label: 'test123', notValid:'ignore' });
     assert.equal(s.vobj.label, 'test123');
     assert.equal(s.label, 'test123');
-    
+
     const s2 = _.merge(s, { notValid:'bar' });
     assert.equal(s.vobj.notValid, 'bar', 'notValid not showing up on model.vobj');
     assert.equal(s.notValid, 'bar', 'merge into model not occurring for proxy');
@@ -223,7 +223,7 @@ describe('Mongoose API', function() {
       assert(e.toString().indexOf('duplicate key value violates') > -1);
       assert(!x);
       d();
-    });  
+    });
   });
 
   it('required check', function(d) {
@@ -233,7 +233,7 @@ describe('Mongoose API', function() {
       assert(e.toString().indexOf('violates not-null constraint') > -1);
       assert(!x);
       d();
-    });  
+    });
   });
 
   it('findByID', function(d) {
@@ -281,7 +281,7 @@ describe('Mongoose API', function() {
   });
 
   it('where.findOne promise.all', function(d) {
-    Promise.all([ 
+    Promise.all([
         Sticker.where({ label: 'test123' }).findOne().exec()
     ]).then( ([x]) => {
       assert.equal(x._id, createdID);
@@ -431,6 +431,12 @@ describe('Mongoose API', function() {
       });
   });
 
+  it('execute if callback provided', function(d) {
+    Package.findOne({}, (e, x) => {
+      d();
+    });
+  });
+
   let nestedID = -1;
   it('create with nested', function(d) {
     const s = new Package({ name: 'test123', recommendedPackages: recommendedPackages, cptPackageId: 1 });
@@ -448,7 +454,7 @@ describe('Mongoose API', function() {
         });
     });
   });
-  
+
   it('remove an item from an associated table', function(d) {
     const s = new Package({ _id: nestedID, name: 'test123', recommendedPackages: [recommendedPackages[0]], cptPackageId: 1 });
     s.save((e, id) => {
@@ -459,7 +465,7 @@ describe('Mongoose API', function() {
         .exec((e, x) => {
           assert.isNull(e, 'error: ' + e);
           assert.equal(x.recommendedPackages.length, 1);
-          assert.equal(x.recommendedPackages[0], [recommendedPackages[0]], 
+          assert.equal(x.recommendedPackages[0], [recommendedPackages[0]],
             x.recommendedPackages + '-' + recommendedPackages[0]);
           d();
         });
