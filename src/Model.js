@@ -55,7 +55,7 @@ class ModelInstance {
   // delete this entry from the db
   delete(cb) {
     return remove(cb);
-  } 
+  }
   // get latest changes from db to model
   update(y) {
     return this.findByID(this.vobj._id).exec().then(x => {
@@ -119,7 +119,7 @@ class ModelInstance {
       batch = _.filter(batch, y => !!y[key] && !!y[s.table]);
 
       // delete old join records
-      q = q.then(z => 
+      q = q.then(z =>
         this.knex(j.ltable).transacting(trx).where(s.table, id).delete()
       );
 
@@ -174,7 +174,11 @@ class Model {
     this.name = name;
     this.schema = schema;
     this._knex = null;
+    this.init();
     if (DEBUG) console.log('-- parsing ' + name + ' --');
+  }
+  init() {
+    core.sync(this._knex, this.schema);
   }
   create(vobj) {
     const m = new ModelInstance(this._schema, vobj, this.findByID.bind(this) );
@@ -276,7 +280,7 @@ function removeInvalidFields(_schema, obj) {
     .pickBy((v, k) => k !== '_id' && !_schema.props[k] && !_schema.joins[k])
     .keys()
     .value();
-  
+
   _.forEach(r, k => delete obj[k]);
 
   return obj; //_.omit(obj, ...r);
